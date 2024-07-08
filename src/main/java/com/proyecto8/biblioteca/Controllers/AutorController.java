@@ -3,45 +3,57 @@ package com.proyecto8.biblioteca.Controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-import com.proyecto8.biblioteca.Models.AutorModel;
+import com.proyecto8.biblioteca.Models.Autor;
 import com.proyecto8.biblioteca.Services.AutorService;
 
 @RestController
 @RequestMapping("/autores")
-
 public class AutorController {
+    
     @Autowired
     private AutorService autorService;
 
+    // metodo para obtener todos los autores
     @GetMapping
-    public ResponseEntity<List<AutorModel>> getAllAutores(){
-        return new ResponseEntity<>(autorService.getAllAutores(),HttpStatus.OK);
+    public List<Autor> getAllAutores() {
+        return autorService.getAllAutores();
     }
 
+    // metodo para obtener un autor por id
     @GetMapping("/{id}")
-    public ResponseEntity<AutorModel> getAutorById(@PathVariable Long id){
-        AutorModel autor = autorService.getAutorById(id);
-        if (autor == null){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(autor,HttpStatus.OK);
+    public Autor getAutorById(@PathVariable Long id) {
+        return autorService.getAutorById(id);
     }
 
+    // metodo para guardar un autor
     @PostMapping
-    public ResponseEntity<AutorModel> saveAutor(@RequestBody AutorModel autor){
-        return new ResponseEntity<>(autorService.saveAutor(autor),HttpStatus.CREATED);
+    public Autor saveAutor(@RequestBody Autor autor) {
+        return autorService.saveAutor(autor);
     }
 
+    // metodo para eliminar un autor
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteAutor(@PathVariable Long id){
-        if (autorService.getAutorById(id) == null){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    public void deleteAutor(@PathVariable Long id) {
         autorService.deleteAutor(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    // metodo para actualizar un autor
+    @PutMapping("/{id}")
+    public Autor updateAutor(@PathVariable Long id,@RequestBody Autor autor){
+        Autor autorToUpdate = autorService.getAutorById(id);
+        if (autorToUpdate != null) {
+            autorToUpdate.setNombre(autor.getNombre());
+            autorToUpdate.setNacionalidad(autor.getNacionalidad());
+            return autorService.updateAutor(autorToUpdate);
+        } else {
+            // Handle error when autor with given id does not exist
+            throw new RuntimeException("Autor not found with id: " + id);
+        }
+
+    }
+        
   
 
 }
+

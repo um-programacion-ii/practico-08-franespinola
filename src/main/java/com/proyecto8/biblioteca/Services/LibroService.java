@@ -1,36 +1,43 @@
 package com.proyecto8.biblioteca.Services;
 
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import com.proyecto8.biblioteca.Models.LibroModel;
+import org.springframework.stereotype.Service;
+import com.proyecto8.biblioteca.Models.Libro;
 import com.proyecto8.biblioteca.Repositories.LibroRepository;
 
+@Service
 public class LibroService {
     @Autowired
     private LibroRepository libroRepository;
 
-    public List<LibroModel> getAllLibros(){
+
+    // metodo para obtener todos los libros
+    public List<Libro> getAllLibros() {
         return libroRepository.findAll();
     }
 
-    public LibroModel saveLibro(LibroModel libro){
-        return libroRepository.save(libro);
-    }
-
-    public void deleteLibro(Long id){
-        libroRepository.deleteById(id);
-    }
-
-    public LibroModel getLibroById(Long id){
+    // metodo para obtener un libro por id
+    public Libro getLibroById(Long id) {
         return libroRepository.findById(id).orElse(null);
     }
 
-    public LibroModel updateLibro(LibroModel libro){
-        LibroModel existingLibro = libroRepository.findById(libro.getId()).orElse(null);
-        existingLibro.setTitulo(libro.getTitulo());
-        existingLibro.setIsbn(libro.getIsbn());
-        existingLibro.setAutor(libro.getAutor());
-        return libroRepository.save(existingLibro);
+    // metodo para guardar un libro
+    public Libro saveLibro(Libro libro) {
+        return libroRepository.save(libro);
     }
-        
+
+    // metodo para eliminar un libro
+    public void deleteLibro(Long id) {
+        libroRepository.deleteById(id);
+    }
+
+    // metodo para actualizar un libro
+    public Libro updateLibro(Libro libro) {
+        return libroRepository.save(libro);
+    }
+
+
 }
+

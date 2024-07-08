@@ -2,53 +2,56 @@ package com.proyecto8.biblioteca.Controllers;
 
 import java.util.List;
 
-import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.proyecto8.biblioteca.Models.LibroModel;
+import com.proyecto8.biblioteca.Models.Libro;
 import com.proyecto8.biblioteca.Services.LibroService;
 
 
 @RestController
-@RequestMapping("/libros")    
-
+@RequestMapping("/libros")
 public class LibroController {
+    
     @Autowired
     private LibroService libroService;
-    
+
+    // metodo para obtener todos los libros
     @GetMapping
-    public ResponseEntity<List<LibroModel>> getAllLibros(){
-        return new ResponseEntity<>(libroService.getAllLibros(),HttpStatus.OK);
-    }
-    
-    @PostMapping
-    public ResponseEntity<LibroModel> saveLibro(@RequestBody LibroModel libro){
-        return new ResponseEntity<>(libroService.saveLibro(libro),HttpStatus.CREATED);
+    public List<Libro> getAllLibros() {
+        return libroService.getAllLibros();
     }
 
+    // metodo para obtener un libro por id
+    @GetMapping("/{id}")
+    public Libro getLibroById(@PathVariable Long id) {
+        return libroService.getLibroById(id);
+    }
+
+    // metodo para guardar un libro
+    @PostMapping
+    public Libro saveLibro(@RequestBody Libro libro) {
+        return libroService.saveLibro(libro);
+    }
+
+    // metodo para eliminar un libro
     @DeleteMapping("/{id}")
-    public void deleteLibro(@PathVariable Long id){
+    public void deleteLibro(@PathVariable Long id) {
         libroService.deleteLibro(id);
     }
-    
-    @GetMapping("/{id}")
-    public ResponseEntity<LibroModel> getLibroById(@PathVariable Long id){
-        LibroModel libro = libroService.getLibroById(id);
-        if (libro == null){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+    // metodo para actualizar un libro
+    @PutMapping("/{id}")
+    public Libro updateLibro(@PathVariable Long id ,@RequestBody Libro libro) {
+        Libro libroToUpdate = libroService.getLibroById(id);
+        if (libroToUpdate != null) {
+            libroToUpdate.setIsbn(libro.getIsbn());
+            libroToUpdate.setTitulo(libro.getTitulo());
+            return libroService.updateLibro(libroToUpdate);
+        }else{
+            // Handle error when libro with given id does not exist
+            throw new RuntimeException("Libro not found with id: " + id);
         }
-        return new ResponseEntity<>(libro,HttpStatus.OK);
     }
-    
-    @PutMapping
-    public ResponseEntity<LibroModel> updateLibro(@PathVariable Long id, @RequestBody LibroModel libro){
-        if (libroService.getLibroById(id) == null){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        libro.setId(id);
-        return new ResponseEntity<>(libroService.updateLibro(libro),HttpStatus.OK);
-    }
+
 }
 
