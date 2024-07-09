@@ -23,6 +23,16 @@ public class LibroService {
         return libroRepository.findById(id).orElse(null);
     }
 
+    // metodo para obtener un libro por titulo usando derived query methods
+    public List<Libro> getLibroByTitulo(String titulo) {
+        return libroRepository.findByTitulo(titulo);
+    }
+
+    // metodo para obtener un libro por titulo usando JPQL query
+    public List<Libro> getLibroByTituloCriteria(String titulo) {
+        return libroRepository.findByTituloJPQL(titulo);
+    }
+
     // metodo para guardar un libro
     public Libro saveLibro(Libro libro) {
         return libroRepository.save(libro);

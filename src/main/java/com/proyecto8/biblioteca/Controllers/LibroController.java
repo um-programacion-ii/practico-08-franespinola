@@ -27,6 +27,19 @@ public class LibroController {
         return libroService.getLibroById(id);
     }
 
+    // metodo para obtener un libro por titulo usando derived query methods
+    @GetMapping("/titulo-derived/{titulo}")
+    public List<Libro> getLibroByTitulo(@PathVariable String titulo) {
+        return libroService.getLibroByTitulo(titulo);
+    }
+
+    //metodo para obtener un libro por titulo usando JPQL query
+    @GetMapping("/titulo-JPQL/{titulo}")
+    public List<Libro> getLibroByTituloCriteria(@PathVariable String titulo) {
+        return libroService.getLibroByTituloCriteria(titulo);
+    }
+
+
     // metodo para guardar un libro
     @PostMapping
     public Libro saveLibro(@RequestBody Libro libro) {
